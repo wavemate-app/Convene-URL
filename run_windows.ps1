@@ -37,28 +37,30 @@ $ProgramFilesPaths = @(
 
 Write-Host "Attempting to auto-detect game directory..." -ForegroundColor Yellow
 
-# First, check Program Files paths
-foreach ($path in $ProgramFilesPaths) {
-    if (Test-Path $path) {
+# Combine ProgramFiles paths and relative paths on all drives
+$AllPaths = @()
+
+# Add explicit ProgramFiles paths
+$AllPaths += $ProgramFilesPaths
+
+# Add relative paths on all drives dynamically
+$Drives = Get-PSDrive -PSProvider FileSystem
+foreach ($drive in $Drives) {
+    foreach ($relPath in $PossibleRelativePaths) {
+        $AllPaths += Join-Path $drive.Root $relPath
+    }
+}
+
+# Check each path for the log file
+foreach ($path in $AllPaths) {
+    $LogPath = Join-Path $path "Client\Saved\Logs\Client.log"
+    if (Test-Path $LogPath) {
         $GameDir = $path
+        Write-Host "Game found at: $GameDir" -ForegroundColor Green
         break
     }
 }
 
-# If not found, check all drives
-if (-not $GameDir) {
-    $Drives = Get-PSDrive -PSProvider FileSystem
-    foreach ($drive in $Drives) {
-        foreach ($relPath in $PossibleRelativePaths) {
-            $fullPath = Join-Path $drive.Root $relPath
-            if (Test-Path $fullPath) {
-                $GameDir = $fullPath
-                break
-            }
-        }
-        if ($GameDir) { break }
-    }
-}
 # If auto-detect failed, ask user
 if (-not $GameDir) {
     Write-Host "Auto-detection failed. Please specify game directory." -ForegroundColor Yellow
