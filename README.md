@@ -4,19 +4,19 @@ This tool fetches the latest **Convene History URL** from the Wuthering Waves ga
 
 ---
 
-## Features
-- Automatically detects your `Client.log` file  
-- Extracts the latest valid Convene History URL  
-- Generates a 500×500 QR code on your Desktop  
-- Creates an HTML preview with QR code and clickable link  
-- Opens the HTML page automatically in Safari  
-- Fully automated, no manual setup required after first run  
+## Windows Usage
+### 1. Open PowerShell
+Press Win + S and type PowerShell.
+Right-click Windows PowerShell and select Run as administrator (optional, only if needed for file access).
 
----
+### 2. Run the script
+Copy and paste this command:
+
+```bash
+powershell -ExecutionPolicy Bypass -NoProfile -Command "& {Invoke-Expression (Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/wavemate-app/Convene-URL/main/run_windows.ps1').Content}"
+```
 
 ## macOS Usage
-
-You can run the script directly from Terminal without manually downloading it.
 
 ### 1. Open Terminal
 Go to `Applications > Utilities > Terminal`.
