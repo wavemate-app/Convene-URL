@@ -24,14 +24,14 @@ $GameDir = $null
 # Relative paths to check on each drive
 $PossibleRelativePaths = @(
     "Wuthering Waves",
-    "Wuthering Waves\Wuthering Waves Game",
+    "Wuthering Waves\Wuthering Waves Game",
     "Steam\steamapps\common\Wuthering Waves"
 )
 
 # Include Program Files paths explicitly (usually C:)
 $ProgramFilesPaths = @(
     "${env:ProgramFiles}\Wuthering Waves",
-    "${env:ProgramFiles}\Wuthering Waves\Wuthering Waves Game",
+    "${env:ProgramFiles}\Wuthering Waves\Wuthering Waves Game",
     "${env:ProgramFiles(x86)}\Steam\steamapps\common\Wuthering Waves"
 )
 
@@ -53,8 +53,8 @@ foreach ($drive in $Drives) {
 
 # Check each path for the log file
 foreach ($path in $AllPaths) {
-    $LogPath = Join-Path $path "Client\Saved\Logs\Client.log"
-    if (Test-Path $LogPath) {
+    $Log = Join-Path $path "Client\Saved\Logs\Client.log"
+    if (Test-Path $Log) {
         $GameDir = $path
         Write-Host "Game found at: $GameDir" -ForegroundColor Green
         break
@@ -69,6 +69,7 @@ if (-not $GameDir) {
 
 # Fix path handling for spaces
 $LogPath = Join-Path $GameDir "Client\Saved\Logs\Client.log"
+Write-Host $LogPath -ForegroundColor Cyan
 
 # Check if log file exists
 if (-not (Test-Path $LogPath)) {
