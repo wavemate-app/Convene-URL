@@ -20,25 +20,45 @@ $OutputHtml = "$env:USERPROFILE\Desktop\convene_url.html"
 
 # Try to auto-detect game directory first
 $GameDir = $null
-$PossiblePaths = @(
+
+# Relative paths to check on each drive
+$PossibleRelativePaths = @(
+    "Wuthering Waves",
+    "Wuthering Waves\Wuthering Waves Game",
+    "Steam\steamapps\common\Wuthering Waves"
+)
+
+# Include Program Files paths explicitly (usually C:)
+$ProgramFilesPaths = @(
     "${env:ProgramFiles}\Wuthering Waves",
-    "${env:ProgramFiles(X86)}\Steam\steamapps\common\Wuthering Waves",
-    "C:\Wuthering Waves"
+    "${env:ProgramFiles}\Wuthering Waves\Wuthering Waves Game",
+    "${env:ProgramFiles(x86)}\Steam\steamapps\common\Wuthering Waves"
 )
 
 Write-Host "Attempting to auto-detect game directory..." -ForegroundColor Yellow
 
-foreach ($Path in $PossiblePaths) {
-    if (Test-Path $Path) {
-        $TestLogPath = Join-Path $Path "Client\Saved\Logs\Client.log"
-        if (Test-Path $TestLogPath) {
-            $GameDir = $Path
-            Write-Host "Auto-detected game directory: $GameDir" -ForegroundColor Green
-            break
-        }
+# First, check Program Files paths
+foreach ($path in $ProgramFilesPaths) {
+    if (Test-Path $path) {
+        $GameDir = $path
+        break
     }
 }
 
+# If not found, check all drives
+if (-not $GameDir) {
+    $Drives = Get-PSDrive -PSProvider FileSystem
+    foreach ($drive in $Drives) {
+        foreach ($relPath in $PossibleRelativePaths) {
+            $fullPath = Join-Path $drive.Root $relPath
+            if (Test-Path $fullPath) {
+                $GameDir = $fullPath
+                break
+            }
+        }
+        if ($GameDir) { break }
+    }
+}
 # If auto-detect failed, ask user
 if (-not $GameDir) {
     Write-Host "Auto-detection failed. Please specify game directory." -ForegroundColor Yellow
