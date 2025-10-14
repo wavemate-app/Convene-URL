@@ -13,6 +13,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY o
 You can view the full text of the GNU General Public License at https://www.gnu.org/licenses/.
 
 [Credits]
+- Inspired by WuWa Tracker (https://wuwatracker.com)
 '
 
 set -e
