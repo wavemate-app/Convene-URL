@@ -26,3 +26,7 @@ Copy and paste this command:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wavemate-app/Convene-URL/main/run_mac.sh)
+```
+
+If it’s not working, you can reach us by **[email](mailto:support@wavemate.app)** or join our **[Discord](https://discord.gg/Y7guZsj4DK)**.
+
