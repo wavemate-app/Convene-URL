@@ -25,7 +25,8 @@ $GameDir = $null
 $PossibleRelativePaths = @(
     "Wuthering Waves",
     "Wuthering Waves\Wuthering Waves Game",
-    "Steam\steamapps\common\Wuthering Waves"
+    "Steam\steamapps\common\Wuthering Waves",
+    "Epic Games\WutheringWavesj3oFh\Wuthering Waves Game"
 )
 
 # Include Program Files paths explicitly (usually C:)
