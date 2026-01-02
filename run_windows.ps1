@@ -66,11 +66,17 @@ foreach ($path in $AllPaths) {
 if (-not $GameDir) {
     Write-Host "Auto-detection failed. Please specify game directory." -ForegroundColor Yellow
     $GameDir = Read-Host "Enter the Wuthering Waves game directory (e.g., C:\Program Files (x86)\Steam\steamapps\common\Wuthering Waves)"
+    
+    # Validate user input
+    if ([string]::IsNullOrWhiteSpace($GameDir)) {
+        Write-Host "Error: Game directory cannot be empty!" -ForegroundColor Red
+        exit 1
+    }
 }
 
 # Fix path handling for spaces
 $LogPath = Join-Path $GameDir "Client\Saved\Logs\Client.log"
-Write-Host $LogPath -ForegroundColor Cyan
+Write-Host "Log path: $LogPath" -ForegroundColor Cyan
 
 # Check if log file exists
 if (-not (Test-Path $LogPath)) {
