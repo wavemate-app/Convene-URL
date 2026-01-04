@@ -16,6 +16,15 @@ Copy and paste this command:
 powershell -ExecutionPolicy Bypass -NoProfile -Command "& {Invoke-Expression (Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/wavemate-app/Convene-URL/main/run_windows.ps1').Content}"
 ```
 
+If you get an Access is denied or powershell.exe failed to run error
+This usually happens on restricted or secured Windows systems.
+Run this instead inside the same PowerShell window:
+
+```bash
+Invoke-Expression (Invoke-WebRequest “https://raw.githubusercontent.com/wavemate-app/Convene-URL/main/run_windows.ps1” -UseBasicParsing).Content
+```
+
+
 ## macOS Usage
 
 ### 1. Open Terminal
