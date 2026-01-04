@@ -26,14 +26,16 @@ $PossibleRelativePaths = @(
     "Wuthering Waves",
     "Wuthering Waves\Wuthering Waves Game",
     "Steam\steamapps\common\Wuthering Waves",
-    "Epic Games\WutheringWavesj3oFh\Wuthering Waves Game"
+    "Epic Games\WutheringWavesj3oFh\Wuthering Waves Game",
+    "SteamLibrary\steamapps\common\Wuthering Waves"
 )
 
 # Include Program Files paths explicitly (usually C:)
 $ProgramFilesPaths = @(
     "${env:ProgramFiles}\Wuthering Waves",
     "${env:ProgramFiles}\Wuthering Waves\Wuthering Waves Game",
-    "${env:ProgramFiles(x86)}\Steam\steamapps\common\Wuthering Waves"
+    "${env:ProgramFiles(x86)}\Steam\steamapps\common\Wuthering Waves",
+    "${env:ProgramFiles(x86)}\SteamLibrary\steamapps\common\Wuthering Waves"
 )
 
 Write-Host "Attempting to auto-detect game directory..." -ForegroundColor Yellow
