@@ -128,7 +128,7 @@ Write-Host $Url -ForegroundColor Cyan
 try {
     Write-Host "Generating QR code..." -ForegroundColor Yellow
     $EscapedUrl = [System.Uri]::EscapeDataString($Url)
-    $QrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=$EscapedUrl"
+    $QrApiUrl = "http://api.wavemate.app/create-qr-code?size=5&data=$EscapedUrl"
     Invoke-WebRequest -Uri $QrApiUrl -OutFile $OutputPng
     Write-Host "QR code saved to: $OutputPng" -ForegroundColor Green
 }
