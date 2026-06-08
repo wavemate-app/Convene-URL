@@ -109,7 +109,15 @@ $UrlPattern = 'https://aki-gm-resources(-oversea)?\.aki-game\.(net|com)/aki/gach
 function Get-DecryptedClientLogContent {
     param([string]$Path)
 
-    $bytes = [System.IO.File]::ReadAllBytes($Path)
+    $stream = [System.IO.File]::Open($Path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+    try {
+        $bytes = New-Object byte[] $stream.Length
+        [void]$stream.Read($bytes, 0, $bytes.Length)
+    }
+    finally {
+        $stream.Dispose()
+    }
+
     for ($i = 0; $i -lt $bytes.Length; $i++) {
         $byte = [int]$bytes[$i]
         if ((($byte -band 0x0F) % 2) -eq 1) {
@@ -126,7 +134,21 @@ function Get-DecryptedClientLogContent {
 $DecodedContent = Get-DecryptedClientLogContent $LogPath
 $UrlMatches = [regex]::Matches($DecodedContent, $UrlPattern)
 if ($UrlMatches.Count -eq 0) {
-    $RawContent = [System.IO.File]::ReadAllText($LogPath)
+    $stream = [System.IO.File]::Open($LogPath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+    try {
+        $reader = New-Object System.IO.StreamReader($stream)
+        try {
+            $RawContent = $reader.ReadToEnd()
+        }
+        finally {
+            $reader.Dispose()
+        }
+    }
+    finally {
+        if ($stream) {
+            $stream.Dispose()
+        }
+    }
     $UrlMatches = [regex]::Matches($RawContent, $UrlPattern)
 }
 
