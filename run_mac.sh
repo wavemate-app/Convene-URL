@@ -47,7 +47,12 @@ if [ ! -f "$LOG_PATH" ]; then
 fi
 
 # Extract latest convene URL
-URL=$(strings "$LOG_PATH" | grep -o "https://aki-gm-resources-oversea[^ ]*" | tail -n 1)
+# The URL may be stored obfuscated in the log, so try a decode pass first:
+# run the log through a Perl byte transform (XOR 0xa5 / 0xef depending on parity)
+# to de-scramble it, then fall back to reading the plaintext log.
+URL_PATTERN='https://aki-gm-resources(-oversea)?\.aki-game\.(net|com)/aki/gacha/index\.html#/record[^"[:space:]]*'
+URL=$(perl -0777 -pe 's/(.)/chr((ord($1) & 0x0f) % 2 == 1 ? ord($1) ^ 0xa5 : ord($1) ^ 0xef)/gse' "$LOG_PATH" | grep -aEo "$URL_PATTERN" | tail -n 1)
+[ -z "$URL" ] && URL=$(grep -aEo "$URL_PATTERN" "$LOG_PATH" | tail -n 1)
 
 if [ -z "$URL" ]; then
   echo "No valid URL found in Client.log"

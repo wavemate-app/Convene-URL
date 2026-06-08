@@ -100,18 +100,38 @@ if (-not (Test-Path $LogPath)) {
 
 # Extract latest convene URL
 $Url = $null
-$LogContent = Get-Content $LogPath -ErrorAction SilentlyContinue
 
-foreach ($Line in $LogContent) {
-    if ($Line -match 'https://aki-gm-resources-oversea') {
-        if ($Line -match '"url":"([^"]+)"') {
-            $FullUrl = $Matches[1]
-            if ($FullUrl -match '^[^,]+') {
-                $Url = $Matches[0]
-                break
-            }
+# Matches both global (-oversea, .net) and CN (.com) convene history URLs
+$UrlPattern = 'https://aki-gm-resources(-oversea)?\.aki-game\.(net|com)/aki/gacha/index\.html#/record[^"\s]*'
+
+# The Client.log is XOR-obfuscated by Kuro. Decode it first (0xA5/0xEF by
+# low-nibble parity), then fall back to raw plaintext for older log formats.
+function Get-DecryptedClientLogContent {
+    param([string]$Path)
+
+    $bytes = [System.IO.File]::ReadAllBytes($Path)
+    for ($i = 0; $i -lt $bytes.Length; $i++) {
+        $byte = [int]$bytes[$i]
+        if ((($byte -band 0x0F) % 2) -eq 1) {
+            $bytes[$i] = [byte]($byte -bxor 0xA5)
+        }
+        else {
+            $bytes[$i] = [byte]($byte -bxor 0xEF)
         }
     }
+    return [System.Text.Encoding]::UTF8.GetString($bytes)
+}
+
+# Try the decoded content first, then the raw file
+$DecodedContent = Get-DecryptedClientLogContent $LogPath
+$UrlMatches = [regex]::Matches($DecodedContent, $UrlPattern)
+if ($UrlMatches.Count -eq 0) {
+    $RawContent = [System.IO.File]::ReadAllText($LogPath)
+    $UrlMatches = [regex]::Matches($RawContent, $UrlPattern)
+}
+
+if ($UrlMatches.Count -gt 0) {
+    $Url = $UrlMatches[$UrlMatches.Count - 1].Value
 }
 
 if (-not $Url) {
